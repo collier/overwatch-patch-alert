@@ -24,7 +24,7 @@ type Config struct {
 	GameClients  []GameClient `json:"gameClients"`
 }
 
-// UpdateConfig writes the input Config struct to the config.json file
+// WriteToFile writes the input Config struct to the config.json file
 func (c *Config) WriteToFile() error {
 	config, err := json.MarshalIndent(c, "", "  ")
 	if err != nil {
