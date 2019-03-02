@@ -3,5 +3,7 @@ data.json
 config.json
 overwatch-patch
 overwatch-patch.exe
+overwatch-patch-alert
+overwatch-patch-alert.exe
 DEPLOY_GUIDE.md
 *.log

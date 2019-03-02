@@ -36,15 +36,18 @@ func main() {
 
 	newVersionFound := false
 	errorsOccurred := false
-	for _, gc := range conf.GameClients {
+	for i, gc := range conf.GameClients {
 		newVersion, err := GetCurrentVersion(gc.BlizztrackID)
 		if err != nil {
 			errorsOccurred = true
 			log.Printf("ERROR %v", err)
+		} else if newVersion == "" {
+			errorsOccurred = true
+			log.Printf("ERROR failed to get new version from blizztrack API")
 		} else if newVersion != gc.Version {
 			log.Printf("INFO new patch (%s) for %s servers", newVersion, gc.Name)
 			newVersionFound = true
-			gc.Version = newVersion
+			conf.GameClients[i].Version = newVersion
 			msg := fmt.Sprintf("A new Overwatch patch has been released on the %s servers.", gc.Name)
 			msgURL := GetPatchNotesURL(gc.BlizztrackID)
 			err = pushover.NotifyWithURL(msg, msgURL)
@@ -56,14 +59,10 @@ func main() {
 
 	if errorsOccurred {
 		conf.FailureCount = conf.FailureCount + 1
-		if conf.FailureCount == conf.MaxFailures {
+		if conf.FailureCount >= conf.MaxFailures {
 			conf.ServiceOn = false
 			log.Printf("WARN service has been turned off due to failed scrape of patch")
-			msg := fmt.Sprintf(`
-				Too many consecutive errors occured while scraping 
-				overwatch patches, and the service is being shut down. 
-				Correct configuration and turn service back on.
-			`)
+			msg := fmt.Sprintf("Too many consecutive errors occured while scraping overwatch patches, and the service is being shut down. Correct configuration and turn service back on.")
 			err = pushover.Notify(msg)
 			if err != nil {
 				log.Printf("ERROR failed to send pushover notification: %v", err)
@@ -74,12 +73,14 @@ func main() {
 		}
 	}
 
+	failuresReset := false
 	if conf.FailureCount > 0 && !errorsOccurred {
+		failuresReset = true
 		conf.FailureCount = 0
 		log.Printf("INFO consecutive failure count reset to 0 after successfully parsing all builds")
 	}
 
-	if newVersionFound || errorsOccurred {
+	if newVersionFound || errorsOccurred || failuresReset {
 		err = conf.WriteToFile()
 		if err != nil {
 			log.Printf("ERROR unable to write to config.json: %v", err)
