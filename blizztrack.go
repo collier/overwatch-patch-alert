@@ -50,7 +50,7 @@ func GetCurrentVersion(blizztrackID string) (string, error) {
 	}
 	var version string
 	for _, r := range game.Regions {
-		if r.Region == "US" {
+		if r.Region == "us" {
 			version = r.VersionsName
 		}
 	}
