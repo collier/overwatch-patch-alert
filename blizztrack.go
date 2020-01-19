@@ -32,34 +32,32 @@ type Game struct {
 	Regions   []Region `json:"regions"`
 }
 
-// GetCurrentVersion Returns the current version number of a Blizzard game
-// client in the US region
-func GetCurrentVersion(blizztrackID string) (string, error) {
-	urlTmpl := "https://blizztrack.com/api/%s/info/json?mode=vers"
-	url := fmt.Sprintf(urlTmpl, blizztrackID)
-	resp, err := http.Get(url)
+// GetBlizzTrackVersion returns the current version number of a Blizzard game
+// client for a given blizztrack game ID
+func GetBlizzTrackVersion(id string) (string, error) {
+	url := fmt.Sprintf("https://blizztrack.com/api/%s/info/json?mode=vers", id)
+	res, err := http.Get(url)
 	if err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	var game Game
-	err = json.Unmarshal(body, &game)
+	defer res.Body.Close()
+	body, err := ioutil.ReadAll(res.Body)
+	var g Game
+	err = json.Unmarshal(body, &g)
 	if err != nil {
 		return "", err
 	}
-	var version string
-	for _, r := range game.Regions {
+	var ver string
+	for _, r := range g.Regions {
 		if r.Region == "us" {
-			version = r.VersionsName
+			ver = r.VersionsName
 		}
 	}
-	return version, nil
+	return ver, nil
 }
 
-// GetPatchNotesURL returns the URL to visit in the browser to view patch notes
-// for a given blizztrackID
-func GetPatchNotesURL(blizztrackID string) string {
-	urlTmpl := "https://blizztrack.com/patch_notes/%s/latest"
-	return fmt.Sprintf(urlTmpl, blizztrackID)
+// GetBlizzTrackPatchNotesURL returns the URL to visit in the browser to view
+// patch notes for a given blizztrack game ID
+func GetBlizzTrackPatchNotesURL(id string) string {
+	return fmt.Sprintf("https://blizztrack.com/patch_notes/%s/latest", id)
 }

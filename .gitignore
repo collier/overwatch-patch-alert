@@ -1,5 +1,5 @@
 .vscode
-data.json
+config.toml
 config.json
 overwatch-patch
 overwatch-patch.exe
