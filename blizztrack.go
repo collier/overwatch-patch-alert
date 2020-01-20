@@ -47,13 +47,14 @@ func GetBlizzTrackVersion(id string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	var ver string
+	var v string
 	for _, r := range g.Regions {
 		if r.Region == "us" {
-			ver = r.VersionsName
+			v = r.VersionsName
+			break
 		}
 	}
-	return ver, nil
+	return v, nil
 }
 
 // GetBlizzTrackPatchNotesURL returns the URL to visit in the browser to view

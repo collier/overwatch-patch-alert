@@ -1,0 +1,28 @@
+# Available options:
+#
+#   # whether the service is running or not
+#   active = true
+# 
+#   # current number of consectively failed attempts to get path information
+#   failures = 0
+# 
+#   # maximum number of failed attempts allowed before service turns off
+#   maxfailures = 6
+# 
+#   # current patch information for the Live Overwatch servers, including the 
+#   # name that will appear in the pushover notication
+#   [overwatch]
+#     name = "Live"
+#     version = "1.44.0.0.65301"
+# 
+#   # current patch information for the PTR Overwatch servers, including the 
+#   # name that will appear in the pushover notication
+#   [overwatch_ptr]
+#     name = "PTR"
+#     version = "1.44.0.0.65301"
+#
+#   # pushover connection information
+#   [pushover]
+#     apptoken = 
+#     device = 
+#     usertoken = 
